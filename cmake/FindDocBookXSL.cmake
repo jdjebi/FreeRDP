@@ -25,6 +25,18 @@ find_path (DOCBOOKXSL_DIR lib/lib.xsl
    PATH_SUFFIXES ${STYLESHEET_PATH_LIST}
 )
 
+if (NOT DOCBOOKXSL_DIR AND APPLE)
+   # hack for macOS homebrew installation 
+   set(HOMEBREW_DOCBOOK_DIR /opt/homebrew/Cellar/docbook-xsl)
+   file(GLOB_RECURSE DOCBOOKXSL_DIRS ${HOMEBREW_DOCBOOK_DIR}/*/lib.xsl)
+   foreach(FILE ${DOCBOOKXSL_DIRS})
+      if (${FILE} MATCHES ".*docbook-xsl/lib/lib.xsl$")
+         set(DOCBOOKXSL_DIR ${FILE})
+         break()
+      endif()
+   endforeach()   
+endif()
+
 if (NOT DOCBOOKXSL_DIR)
    # hacks for systems that put the version in the stylesheet dirs
    set (STYLESHEET_PATH_LIST)
